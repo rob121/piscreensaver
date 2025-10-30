@@ -607,7 +607,7 @@ func main() {
 	imageDir := flag.String("dir", "/home/ralfonso/Pictures/screensaver", "Directory of images for slideshow")
 	imvPath := flag.String("imv", "/usr/bin/imv-wayland", "Path to imv-wayland binary")
 	imvArgsStr := flag.String("imv-args", "-f -s full -t 30", "Arguments passed to imv-wayland (excluding the directory)")
-	logFilePath := flag.String("logfile", "/tmp/screensaver-daemon.log", "Log file path")
+	logFilePath := flag.String("logfile", "/tmp/piscreensaver.log", "Log file path")
 	debug := flag.Bool("debug", false, "Enable verbose logging to stdout")
 
 	blankStartStr := flag.String("blank_start", "23:00", "Time of day to begin full blank/off (HH:MM, 24h). Same as blank_end disables blanking.")
@@ -719,15 +719,51 @@ func main() {
 		if saverRunning {
 			return
 		}
-		args := append(splitArgs(*imvArgsStr), *imageDir)
+		// Read directory and collect image files (excluding .disabled)
+		entries, err := os.ReadDir(*imageDir)
+		if err != nil {
+			log.Printf("failed to read image directory: %v\n", err)
+			return
+		}
+
+		var imageFiles []string
+		for _, entry := range entries {
+			if entry.IsDir() {
+				continue
+			}
+			name := entry.Name()
+			// Only include image files
+			if !isImageFile(name) {
+				continue
+			}
+			// Exclude disabled files
+			if strings.HasSuffix(name, ".disabled") {
+				continue
+			}
+			// Add full path to image
+			imageFiles = append(imageFiles, filepath.Join(*imageDir, name))
+		}
+
+		if len(imageFiles) == 0 {
+			log.Printf("no images found in directory: %s\n", *imageDir)
+			return
+		}
+
+		// Build command: imv-wayland [args] image1.png image2.jpg ...
+		args := append(splitArgs(*imvArgsStr), imageFiles...)
 		cmd := exec.Command(*imvPath, args...)
+		
+		if *debug {
+			log.Printf("imv command: %s %v\n", *imvPath, args)
+		}
+		
 		if err := cmd.Start(); err != nil {
 			log.Printf("failed to start screensaver: %v\n", err)
 			return
 		}
 		saverCmd = cmd
 		saverRunning = true
-		log.Printf("screensaver pid=%d\n", saverCmd.Process.Pid)
+		log.Printf("screensaver pid=%d (showing %d images)\n", saverCmd.Process.Pid, len(imageFiles))
 	}
 
 	// helper: blank the screen via wlr-randr
