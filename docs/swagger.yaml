@@ -1,0 +1,50 @@
+basePath: /api
+host: localhost:8087
+info:
+  contact: {}
+  description: API for controlling the screensaver daemon
+  title: Screensaver API
+  version: "1.0"
+paths:
+  /api/startscreensaver:
+    post:
+      consumes:
+      - application/json
+      description: Starts the screensaver if it's not currently in the blank window
+        period
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Start screensaver
+      tags:
+      - screensaver
+  /api/stopscreensaver:
+    post:
+      consumes:
+      - application/json
+      description: Stops the screensaver if it's running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Stop screensaver
+      tags:
+      - screensaver
+swagger: "2.0"

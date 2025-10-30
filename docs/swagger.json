@@ -1,0 +1,74 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for controlling the screensaver daemon",
+        "title": "Screensaver API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8087",
+    "basePath": "/api",
+    "paths": {
+        "/api/startscreensaver": {
+            "post": {
+                "description": "Starts the screensaver if it's not currently in the blank window period",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "screensaver"
+                ],
+                "summary": "Start screensaver",
+                "responses": {
+                    "200": {
+                        "description": "message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/stopscreensaver": {
+            "post": {
+                "description": "Stops the screensaver if it's running",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "screensaver"
+                ],
+                "summary": "Stop screensaver",
+                "responses": {
+                    "200": {
+                        "description": "message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
