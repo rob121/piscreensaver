@@ -1,0 +1,22 @@
+# Binaries
+piscreensaver
+piscreensaver-arm
+piscreensaver-arm64
+main
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+

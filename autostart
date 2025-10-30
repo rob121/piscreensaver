@@ -1,0 +1,8 @@
+piscreensaver \
+  --timeout 30 \
+  --device /dev/input/event5 \
+  --dir /home/ralfonso/Pictures/screensaver \
+  --imv /usr/bin/imv-wayland \
+  --imv-args "-f -s full -t 30" \
+  --logfile /dev/null \
+  >/dev/null 2>&1 &
